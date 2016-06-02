@@ -29,40 +29,50 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 /**
  * Some REST endpoints.
  */
-public class VertxServer extends AbstractVerticle  {
-
+public class VertxServer extends AbstractVerticle
+{
     final UserTaskService uts = UserTaskService.getInstance();
-    
-	public static void init() {
-        Vertx.vertx().deployVerticle(VertxServer.class.getName());		
-	}  
-    
-    @Override
-    public void start() throws Exception {
 
-    	final Router router = Router.router(vertx);
-        
+    public static void init()
+    {
+        Vertx.vertx().deployVerticle(VertxServer.class.getName());
+    }
+
+    @Override
+    public void start() throws Exception
+    {
+
+        final Router router = Router.router(vertx);
+
         router.route().handler(BodyHandler.create());
 
-        router.get("/angularjsdemo/userTasks").handler(ctx -> {
-            try {
-            	ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-				ctx.response().end(Json.toJson(uts.findAll()));
-			} catch (JsonProcessingException e) {
-				e.printStackTrace(); // FIXME : log. 
-			}
+        router.get("/angularjsdemo/userTasks").handler(ctx ->
+        {
+            try
+            {
+                ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+                ctx.response().end(Json.toJson(uts.findAll()));
+            }
+            catch (JsonProcessingException e)
+            {
+                e.printStackTrace(); // FIXME : log.
+            }
         });
-        
-        router.get("/angularjsdemo/userTasks/:user").handler(ctx -> {
-            try {
-            	final String userName = ctx.request().getParam("user");
-            	ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-				ctx.response().end(Json.toJson(uts.findByUserName(userName)));				
-			} catch (JsonProcessingException e) {
-				e.printStackTrace(); // FIXME : log. 
-			}
+
+        router.get("/angularjsdemo/userTasks/:user").handler(ctx ->
+        {
+            try
+            {
+                final String userName = ctx.request().getParam("user");
+                ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+                ctx.response().end(Json.toJson(uts.findByUserName(userName)));
+            }
+            catch (JsonProcessingException e)
+            {
+                e.printStackTrace(); // FIXME : log.
+            }
         });
-        
+
         vertx.createHttpServer().requestHandler(router::accept).listen(8080);
     }
 }

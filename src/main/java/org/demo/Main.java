@@ -22,16 +22,16 @@ import org.demo.vertx.VertxServer;
 /**
  * Application entry point.
  */
-public class Main {
-    
+public class Main
+{
     public static void main(String... params) throws Exception
     {
         // init H2.
         H2.init();
-        
+
         // load some default data.
         UserTaskService.loadDefaults();
-        
+
         // init vertx.
         VertxServer.init();
     }

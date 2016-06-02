@@ -25,11 +25,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Json utils.
  */
-public class Json {
+public class Json
+{
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-	private static final ObjectMapper mapper = new ObjectMapper();
-
-	public static String toJson(Collection<UserTask> collection) throws JsonProcessingException {
-		return mapper.writeValueAsString(collection);
-	}
+    public static String toJson(Collection<UserTask> collection) throws JsonProcessingException
+    {
+        return mapper.writeValueAsString(collection);
+    }
 }

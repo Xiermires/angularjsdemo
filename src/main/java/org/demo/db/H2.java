@@ -22,11 +22,12 @@ import org.h2.jdbcx.JdbcDataSource;
 /**
  * Embedded H2 database.
  */
-public class H2 {
- 
+public class H2
+{
     private static JdbcDataSource ds;
-    
-    public static void init() throws NamingException {
+
+    public static void init() throws NamingException
+    {
         ds = new JdbcDataSource();
         ds.setURL("jdbc:h2:~/angularjsdemoDB");
     }

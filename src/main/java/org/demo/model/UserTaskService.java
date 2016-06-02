@@ -25,51 +25,52 @@ import javax.persistence.TypedQuery;
 /**
  * JPA providing CRUD operations on {@link UserTask}.
  */
-public class UserTaskService {
+public class UserTaskService
+{
+    private static UserTaskService instance;
 
-	private static UserTaskService instance;
-	
-	private UserTaskService()
-	{
-	}
-	
-	public static UserTaskService getInstance()
-	{
-		if (instance == null)
-		{
-			instance = new UserTaskService();
-		}
-		return instance;
-	}
-	
-	private EntityManager em = createEntityManager();
+    private UserTaskService()
+    {
+    }
 
-	public Collection<UserTask> findAll() {
-		final TypedQuery<UserTask> query = em.createNamedQuery("UserTask.findAll",
-				UserTask.class);
-		return query.getResultList();
-	}
+    public static UserTaskService getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new UserTaskService();
+        }
+        return instance;
+    }
 
-	public Collection<UserTask> findByUserName(String userName) {
-		final TypedQuery<UserTask> query = em.createNamedQuery(
-				"UserTask.findByUserName", UserTask.class);
-		query.setParameter("userName", userName);
-		return query.getResultList();
-	}
-	
-	public static void loadDefaults()
-	{
-		final EntityManager em = getInstance().em;
-		em.getTransaction().begin();
-		em.persist(UserTask.create("Xavier Mires", "vert.x", "set up endpoints"));
-		em.persist(UserTask.create("Xavier Mires", "angularjs", "bind rest services"));
-		em.persist(UserTask.create("Xavier Mires", "angularjs", "create front-end"));
-		em.persist(UserTask.create("unassigned", "angularjs", "css"));
-		em.getTransaction().commit();
-	}
-	
-	private static EntityManager createEntityManager() {
-		final EntityManagerFactory emf = Persistence.createEntityManagerFactory("angularjsdemo");
-	    return emf.createEntityManager();
-	}
+    private EntityManager em = createEntityManager();
+
+    public Collection<UserTask> findAll()
+    {
+        final TypedQuery<UserTask> query = em.createNamedQuery("UserTask.findAll", UserTask.class);
+        return query.getResultList();
+    }
+
+    public Collection<UserTask> findByUserName(String userName)
+    {
+        final TypedQuery<UserTask> query = em.createNamedQuery("UserTask.findByUserName", UserTask.class);
+        query.setParameter("userName", userName);
+        return query.getResultList();
+    }
+
+    public static void loadDefaults()
+    {
+        final EntityManager em = getInstance().em;
+        em.getTransaction().begin();
+        em.persist(UserTask.create("Xavier Mires", "vert.x", "set up endpoints"));
+        em.persist(UserTask.create("Xavier Mires", "angularjs", "bind rest services"));
+        em.persist(UserTask.create("Xavier Mires", "angularjs", "create front-end"));
+        em.persist(UserTask.create("unassigned", "angularjs", "css"));
+        em.getTransaction().commit();
+    }
+
+    private static EntityManager createEntityManager()
+    {
+        final EntityManagerFactory emf = Persistence.createEntityManagerFactory("angularjsdemo");
+        return emf.createEntityManager();
+    }
 }
