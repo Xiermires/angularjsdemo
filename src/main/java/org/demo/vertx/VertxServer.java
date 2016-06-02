@@ -20,8 +20,10 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 
 import org.demo.model.UserTaskService;
+import org.demo.model.UserTaskServiceJPA;
 import org.demo.util.Json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,7 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  */
 public class VertxServer extends AbstractVerticle
 {
-    final UserTaskService uts = UserTaskService.getInstance();
+    final UserTaskService uts = UserTaskServiceJPA.getInstance();
 
     public static void init()
     {
@@ -41,7 +43,6 @@ public class VertxServer extends AbstractVerticle
     @Override
     public void start() throws Exception
     {
-
         final Router router = Router.router(vertx);
 
         router.route().handler(BodyHandler.create());
@@ -73,6 +74,7 @@ public class VertxServer extends AbstractVerticle
             }
         });
 
+        router.route().handler(StaticHandler.create());        
         vertx.createHttpServer().requestHandler(router::accept).listen(8080);
     }
 }

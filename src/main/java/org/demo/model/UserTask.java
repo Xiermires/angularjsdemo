@@ -16,12 +16,15 @@
 package org.demo.model;
 
 import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Straightforward table to keep all info.
@@ -33,23 +36,32 @@ public class UserTask implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    public static UserTask create(String userName, String taskName, String description)
+    public enum Status { DONE, PENDING }; 
+    
+    public static UserTask create(String eventName, String userName, String taskName, Status status, String description)
     {
         final UserTask ut = new UserTask();
+        ut.setEventName(eventName);
         ut.setUserName(userName);
         ut.setTaskName(taskName);
+        ut.setStatus(status);
         ut.setDescription(description);
         return ut;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private Long id;
+
+    private String eventName;
 
     private String userName;
 
     private String taskName;
 
+    private Status status;
+    
     private String description;
 
     public Long getId()
@@ -60,6 +72,16 @@ public class UserTask implements Serializable
     public void setId(Long id)
     {
         this.id = id;
+    }
+
+    public String getEventName()
+    {
+        return eventName;
+    }
+
+    public void setEventName(String eventName)
+    {
+        this.eventName = eventName;
     }
 
     public String getUserName()
@@ -82,6 +104,16 @@ public class UserTask implements Serializable
         this.taskName = taskName;
     }
 
+    public Status getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(Status status)
+    {
+        this.status = status;
+    }
+    
     public String getDescription()
     {
         return description;
@@ -95,17 +127,43 @@ public class UserTask implements Serializable
     @Override
     public int hashCode()
     {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((eventName == null) ? 0 : eventName.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((taskName == null) ? 0 : taskName.hashCode());
+        result = prime * result + ((userName == null) ? 0 : userName.hashCode());
+        return result;
     }
 
     @Override
-    public boolean equals(Object object)
+    public boolean equals(Object obj)
     {
-        if (!(object instanceof UserTask)) { return false; }
-        UserTask other = (UserTask) object;
-        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        UserTask other = (UserTask) obj;
+        if (eventName == null)
+        {
+            if (other.eventName != null) return false;
+        }
+        else if (!eventName.equals(other.eventName)) return false;
+        if (id == null)
+        {
+            if (other.id != null) return false;
+        }
+        else if (!id.equals(other.id)) return false;
+        if (taskName == null)
+        {
+            if (other.taskName != null) return false;
+        }
+        else if (!taskName.equals(other.taskName)) return false;
+        if (userName == null)
+        {
+            if (other.userName != null) return false;
+        }
+        else if (!userName.equals(other.userName)) return false;
+        return true;
     }
 
     @Override

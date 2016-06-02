@@ -16,7 +16,7 @@
 package org.demo;
 
 import org.demo.db.H2;
-import org.demo.model.UserTaskService;
+import org.demo.model.UserTaskServiceJPA;
 import org.demo.vertx.VertxServer;
 
 /**
@@ -30,7 +30,7 @@ public class Main
         H2.init();
 
         // load some default data.
-        UserTaskService.loadDefaults();
+        UserTaskServiceJPA.loadDefaults();
 
         // init vertx.
         VertxServer.init();
