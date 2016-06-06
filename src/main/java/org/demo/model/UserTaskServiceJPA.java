@@ -52,6 +52,21 @@ public class UserTaskServiceJPA implements UserTaskService
         return query.getResultList();
     }
 
+    @Override
+    public void upsert(UserTask userTask)
+    {
+        try
+        {
+            em.getTransaction().begin();
+            em.persist(userTask);
+            em.getTransaction().commit();
+        }
+        catch (Exception e)
+        {
+            em.getTransaction().rollback();
+        }
+    }
+
     public Collection<UserTask> findByUserName(String userName)
     {
         final TypedQuery<UserTask> query = em.createNamedQuery("UserTask.findByUserName", UserTask.class);
@@ -61,13 +76,24 @@ public class UserTaskServiceJPA implements UserTaskService
 
     public static void loadDefaults()
     {
-        final EntityManager em = getInstance().em;
-        em.getTransaction().begin();
-        em.persist(UserTask.create("BBQ 6th June", "Xavier Mires", "Coal & fire stuff.", Status.PENDING, "A couple of coal sacks, plus some lighter."));
-        em.persist(UserTask.create("BBQ 6th June", "Mires Xavier", "Main meal.", Status.PENDING, "Sausages, pork, some cheese, steaks."));
-        em.persist(UserTask.create("BBQ 6th June", "unassigned", "Snaks.", Status.PENDING, "Some chips do the trick."));
-        em.persist(UserTask.create("BBQ 6th June", "unassigned", "Beer.", Status.PENDING, "A case of lager + some dark beers."));
-        em.getTransaction().commit();
+        EntityManager em = null;
+        try
+        {
+            em = getInstance().em;
+            em.getTransaction().begin();
+            em.persist(UserTask.create("BBQ 6th June", "Xavier Mires", "Coal & fire stuff.", Status.PENDING, "A couple of coal sacks, plus some lighter."));
+            em.persist(UserTask.create("BBQ 6th June", "Mires Xavier", "Main meal.", Status.PENDING, "Sausages, pork, some cheese, steaks."));
+            em.persist(UserTask.create("BBQ 6th June", "unassigned", "Snaks.", Status.PENDING, "Some chips do the trick."));
+            em.persist(UserTask.create("BBQ 6th June", "unassigned", "Beer.", Status.PENDING, "A case of lager + some dark beers."));
+            em.getTransaction().commit();
+        }
+        catch (Exception e)
+        {
+            if (em != null)
+            {
+                em.getTransaction().rollback();
+            }
+        }
     }
 
     private static EntityManager createEntityManager()

@@ -5,14 +5,23 @@
 <script type="text/javascript" src="/js/jquery/dist/jquery.js"></script>
 <script type="text/javascript" src="/js/angular/angular.js"></script>
 <script type="text/javascript" src="/js/angular-ui-grid/ui-grid.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap-tpls.js"></script>
 <script type="text/javascript" src="/js/angularjs-demo.js"></script>
 <link rel="styleSheet" href="/js/angular-ui-grid/ui-grid.min.css" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="styleSheet" href="/css/angularjs-demo.css" />
 </head>
 
 <body>
-	<div ng-app="angularjs-demo" ng-controller="demoCtrl">
-		<div ui-grid="gridOptions" class="demoGrid"></div>
+	<div class="mainDiv" ng-app="angularjs-demo" ng-controller="demoCtrl">
+		<div ng-show="message">{{ message }}</div>
+		<div class="buttonsDemo">
+			<button type="button" class="btn btn-primary" ng-click="add()">Add</button>
+			<button type="button" class="btn btn-primary" ng-click="refresh()">Refresh</button>
+		</div>
+		<br>
+		<div class="gridDemo" ui-grid="gridOptions" ui-grid-edit></div>
 	</div>
 </body>
 </html>

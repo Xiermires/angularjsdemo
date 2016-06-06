@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.demo.vertx;
 
+import java.io.IOException;
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
@@ -22,6 +24,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
+import org.demo.model.UserTask;
 import org.demo.model.UserTaskService;
 import org.demo.model.UserTaskServiceJPA;
 import org.demo.util.Json;
@@ -47,6 +50,7 @@ public class VertxServer extends AbstractVerticle
 
         router.route().handler(BodyHandler.create());
 
+        // list all elements.
         router.get("/angularjsdemo/userTasks").handler(ctx ->
         {
             try
@@ -56,7 +60,19 @@ public class VertxServer extends AbstractVerticle
             }
             catch (JsonProcessingException e)
             {
-                e.printStackTrace(); // FIXME : log.
+                e.printStackTrace(); // FIXME : propagate error.
+            }
+        });
+
+        router.post("/angularjsdemo/userTasks").handler(ctx ->
+        {
+            try
+            {
+                uts.upsert(Json.fromJson(ctx.getBodyAsString(), UserTask.class));
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace(); // FIXME : propagate error.
             }
         });
 
@@ -70,11 +86,11 @@ public class VertxServer extends AbstractVerticle
             }
             catch (JsonProcessingException e)
             {
-                e.printStackTrace(); // FIXME : log.
+                e.printStackTrace(); // FIXME : propagate error.
             }
         });
 
-        router.route().handler(StaticHandler.create());        
+        router.route().handler(StaticHandler.create());
         vertx.createHttpServer().requestHandler(router::accept).listen(8080);
     }
 }

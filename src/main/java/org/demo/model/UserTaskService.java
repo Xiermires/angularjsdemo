@@ -21,5 +21,7 @@ public interface UserTaskService
 {
     Collection<UserTask> findAll();
     
-    Collection<UserTask> findByUserName(String userName);    
+    Collection<UserTask> findByUserName(String userName);
+
+    void upsert(UserTask userTask);    
 }

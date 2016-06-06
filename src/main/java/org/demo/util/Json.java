@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.demo.util;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import org.demo.model.UserTask;
@@ -32,5 +33,10 @@ public class Json
     public static String toJson(Collection<UserTask> collection) throws JsonProcessingException
     {
         return mapper.writeValueAsString(collection);
+    }
+
+    public static <T> T fromJson(String json, Class<T> type) throws IOException
+    {
+        return mapper.readValue(json, type);
     }
 }

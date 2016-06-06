@@ -1,0 +1,36 @@
+<div class="modal-header">
+	<h3 class="modal-title">Add a new event task</h3>
+</div>
+<div class="modal-body">
+	<form class="modalForm" novalidate name="Add" id="add" method="post">
+		<div>
+			<label>Event</label>
+		</div>
+		<div>
+			<input class="smallText" type="text" ng-model="data.eventName" />
+		</div>
+		<div>
+			<label>User</label>
+		</div>
+		<div>
+			<input class="smallText" type="text" ng-model="data.userName" />
+		</div>
+		<div>
+			<label>Task</label>
+		</div>
+		<div>
+			<input class="smallText" type="text" ng-model="data.taskName" />
+		</div>
+		<div>
+			<label>Description</label>
+		</div>
+		<div>
+			<textarea class="largeText" ng-model="data.description"></textarea>
+		</div>
+	</form>
+
+</div>
+<div class="modal-footer">
+	<button class="btn btn-success" type="submit" ng-click="save(data)">Save</button>
+	<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>
