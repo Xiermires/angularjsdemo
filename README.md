@@ -1,5 +1,7 @@
 # angularjsdemo
-A little demo mixing angularjs / vert.x / JPA (H2)
+A little web app mixing angularjs / vert.x / JPA (H2)
+
+This web app allows to create Event tasks (by default unassigned), which later an user can assign to himself.
 
 Created using Maven, Eclipse Luna, Java 8.
 
