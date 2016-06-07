@@ -15,8 +15,6 @@
  *******************************************************************************/
 package org.demo.vertx;
 
-import java.io.IOException;
-
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
@@ -27,9 +25,8 @@ import io.vertx.ext.web.handler.StaticHandler;
 import org.demo.model.UserTask;
 import org.demo.model.UserTaskService;
 import org.demo.model.UserTaskServiceJPA;
+import org.demo.model.UserTaskServiceJPA.TaskAlreadyAssigned;
 import org.demo.util.Json;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * Some REST endpoints.
@@ -58,9 +55,13 @@ public class VertxServer extends AbstractVerticle
                 ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json");
                 ctx.response().end(Json.toJson(uts.findAll()));
             }
-            catch (JsonProcessingException e)
+            catch (TaskAlreadyAssigned e1)
             {
-                e.printStackTrace(); // FIXME : propagate error.
+                ctx.fail(409);
+            }
+            catch (Exception e2)
+            {
+                ctx.fail(500);
             }
         });
 
@@ -68,11 +69,23 @@ public class VertxServer extends AbstractVerticle
         {
             try
             {
-                uts.upsert(Json.fromJson(ctx.getBodyAsString(), UserTask.class));
+                final UserTask ut = Json.fromJson(ctx.getBodyAsString(), UserTask.class);
+                if (ut.getId() == null)
+                {
+                    uts.insert(ut);
+                }
+                else
+                {
+                    uts.update(ut);
+                }
             }
-            catch (IOException e1)
+            catch (TaskAlreadyAssigned e1)
             {
-                e1.printStackTrace(); // FIXME : propagate error.
+                ctx.fail(409);
+            }
+            catch (Exception e2)
+            {
+                ctx.fail(500);
             }
         });
 
@@ -84,9 +97,13 @@ public class VertxServer extends AbstractVerticle
                 ctx.response().putHeader(HttpHeaders.CONTENT_TYPE, "application/json");
                 ctx.response().end(Json.toJson(uts.findByUserName(userName)));
             }
-            catch (JsonProcessingException e)
+            catch (TaskAlreadyAssigned e1)
             {
-                e.printStackTrace(); // FIXME : propagate error.
+                ctx.fail(409);
+            }
+            catch (Exception e2)
+            {
+                ctx.fail(500);
             }
         });
 

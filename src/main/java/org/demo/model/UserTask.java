@@ -24,19 +24,17 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * Straightforward table to keep all info.
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "UserTask.findAll", query = "SELECT ut FROM UserTask ut"),
-        @NamedQuery(name = "UserTask.findByUserName", query = "SELECT ut FROM UserTask ut WHERE ut.userName = :userName"), })
+        @NamedQuery(name = "UserTask.findByUserName", query = "SELECT ut FROM UserTask ut WHERE ut.userName = :userName or ut.userName = '-'"), })
 public class UserTask implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    public enum Status { DONE, PENDING }; 
+    public enum Status { COMPLETED, PENDING }; 
     
     public static UserTask create(String eventName, String userName, String taskName, Status status, String description)
     {
@@ -51,7 +49,6 @@ public class UserTask implements Serializable
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Long id;
 
     private String eventName;

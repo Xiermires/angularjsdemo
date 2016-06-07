@@ -2,18 +2,13 @@
 	<h3 class="modal-title">Add a new event task</h3>
 </div>
 <div class="modal-body">
+	<div class="modalForm" ng-show="message">{{ message }}</div>
 	<form class="modalForm" novalidate name="Add" id="add" method="post">
 		<div>
 			<label>Event</label>
 		</div>
 		<div>
 			<input class="smallText" type="text" ng-model="data.eventName" />
-		</div>
-		<div>
-			<label>User</label>
-		</div>
-		<div>
-			<input class="smallText" type="text" ng-model="data.userName" />
 		</div>
 		<div>
 			<label>Task</label>

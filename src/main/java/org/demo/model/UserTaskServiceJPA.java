@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.LockModeType;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
@@ -53,7 +54,7 @@ public class UserTaskServiceJPA implements UserTaskService
     }
 
     @Override
-    public void upsert(UserTask userTask)
+    public void insert(UserTask userTask)
     {
         try
         {
@@ -64,6 +65,28 @@ public class UserTaskServiceJPA implements UserTaskService
         catch (Exception e)
         {
             em.getTransaction().rollback();
+        }
+    }
+
+    @Override
+    public void update(UserTask userTask)
+    {
+        if (assignable(userTask.getId(), userTask.getUserName()))
+        {
+            try
+            {
+                em.getTransaction().begin();
+                em.merge(userTask);
+                em.getTransaction().commit();
+            }
+            catch (Exception e)
+            {
+                em.getTransaction().rollback();
+            }
+        }
+        else
+        {
+            throw new TaskAlreadyAssigned("Error. Task cannot be assigned.");
         }
     }
 
@@ -81,10 +104,10 @@ public class UserTaskServiceJPA implements UserTaskService
         {
             em = getInstance().em;
             em.getTransaction().begin();
-            em.persist(UserTask.create("BBQ 6th June", "Xavier Mires", "Coal & fire stuff.", Status.PENDING, "A couple of coal sacks, plus some lighter."));
-            em.persist(UserTask.create("BBQ 6th June", "Mires Xavier", "Main meal.", Status.PENDING, "Sausages, pork, some cheese, steaks."));
-            em.persist(UserTask.create("BBQ 6th June", "unassigned", "Snaks.", Status.PENDING, "Some chips do the trick."));
-            em.persist(UserTask.create("BBQ 6th June", "unassigned", "Beer.", Status.PENDING, "A case of lager + some dark beers."));
+            em.persist(UserTask.create("Orange Festival", "John", "Hotel.", Status.PENDING, "Mid range. Breakfast included. Close to the festival."));
+            em.persist(UserTask.create("Orange Festival", "Audrey", "Train tickets.", Status.PENDING, "Depart on Friday (we should be there at 16h), return on Sunday night or Monday morning."));
+            em.persist(UserTask.create("Orange Festival", "-", "Snaks for the ride.", Status.PENDING, "Some chips and beer do the trick."));
+            em.persist(UserTask.create("Orange Festival", "-", "Guide.", Status.PENDING, "Pick up some Warsaw city guide, or some printouts."));
             em.getTransaction().commit();
         }
         catch (Exception e)
@@ -100,5 +123,29 @@ public class UserTaskServiceJPA implements UserTaskService
     {
         final EntityManagerFactory emf = Persistence.createEntityManagerFactory("angularjsdemo");
         return emf.createEntityManager();
+    }
+
+    private boolean assignable(Long id, String userName)
+    {
+        try
+        {
+            em.getTransaction().begin();
+            final UserTask ut = em.find(UserTask.class, id, LockModeType.PESSIMISTIC_WRITE);
+            return userName.equals(ut.getUserName()) || "-".equals(ut.getUserName());
+        }
+        finally
+        {
+            em.getTransaction().rollback();
+        }
+    }
+
+    public static class TaskAlreadyAssigned extends RuntimeException
+    {
+        private static final long serialVersionUID = 1L;
+
+        public TaskAlreadyAssigned(String message)
+        {
+            super(message);
+        }
     }
 }

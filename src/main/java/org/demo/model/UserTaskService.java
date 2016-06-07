@@ -23,5 +23,7 @@ public interface UserTaskService
     
     Collection<UserTask> findByUserName(String userName);
 
-    void upsert(UserTask userTask);    
+    void insert(UserTask userTask);    
+    
+    void update(UserTask userTask);    
 }
